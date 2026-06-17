@@ -57,6 +57,7 @@
 .hermes/audio_cache/
 .hermes/cache/
 .hermes/image_cache/
+.hermes/hermes-agent/
 .hermes/logs/
 .hermes/lsp/
 .hermes/memories/

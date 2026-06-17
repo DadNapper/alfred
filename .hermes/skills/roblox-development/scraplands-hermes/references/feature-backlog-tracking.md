@@ -43,6 +43,14 @@ When Oz uploads a CSV backlog:
 6. If an imported priority is malformed (e.g. `PO`), preserve it and mark for triage instead of guessing.
 7. Verify after import/prune with a heading scan (`^### `) and a negative search for removed feature names before reporting completion.
 
+### Model routing for backlog grooming
+
+Treat backlog grooming as a delegate-first workflow.
+
+- Use `delegate_task` to Qwen3 Coder for bulk classification, duplicate clustering, and task extraction.
+- Automatically delegate when feature rows exceed 10 or total records requiring review exceed 20.
+- Keep GPT-5.5 for prioritization decisions, roadmap sequencing, and final recommendation quality checks.
+
 ## Advisor triage principles
 
 Prioritize features that improve the existing core loop, retention clarity, and reusable solo-dev platform leverage.

@@ -2,6 +2,55 @@
 
 Hermes uses an **orchestrator pattern**: the main session stays on premium GPT-5.5 (OpenAI Codex). Cheap or batch work goes to OpenRouter via subagents and auxiliary slots.
 
+## Global delegation policy (default behavior)
+
+Hermes is an orchestrator. Delegate repetitive analysis work by default.
+
+### Always delegate to Qwen3 Coder
+
+Use `delegate_task` automatically for:
+
+- player feedback triage
+- feedback categorization
+- duplicate detection
+- sentiment analysis
+- translation
+- spreadsheet review
+- Airtable review
+- Google Sheets processing
+- bug classification
+- feature request classification
+- bulk text analysis
+- large-scale summarization
+- backlog grooming
+- task extraction
+- analytics review
+- monitoring report analysis
+
+### Delegation thresholds
+
+Automatically delegate when any of the following is true:
+
+- more than 10 feedback items
+- more than 10 bug reports
+- more than 10 feature requests
+- more than 1 spreadsheet page
+- more than 1 Airtable view
+- more than 20 records requiring classification/review
+
+### Keep GPT-5.5 on orchestration work
+
+Keep these on the main GPT-5.5 session:
+
+- product strategy
+- roadmap planning
+- Roblox architecture
+- economy balancing
+- technical/system design
+- prioritization and tradeoff decisions
+- final recommendations and user-facing communication
+- review/synthesis of delegated results
+
 ## Documentation layers
 
 | Layer | Location | Read by Hermes? |
@@ -43,7 +92,7 @@ Roblox **implementation** is Cursor's job, not the main Hermes loop.
 - **Use for:** feedback triage batches, git workflow steps, Cursor handoff prompt drafting
 - **Config:** `~/.hermes/config.yaml` → `delegation.provider` / `delegation.model`
 
-**Rule:** Do not burn GPT-5.5 on bulk triage, git batches, or long handoff drafts. Delegate first; synthesize results on the main agent.
+**Rule:** Do not burn GPT-5.5 on bulk triage, classification, or long mechanical analysis passes. Delegate first; synthesize results on the main agent.
 
 ## Auxiliary side jobs
 

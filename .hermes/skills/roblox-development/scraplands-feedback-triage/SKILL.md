@@ -22,7 +22,20 @@ The objective is to help Alfred quickly identify important issues, recurring com
 
 ## Model routing
 
-Large feedback passes (many rows, duplicate clustering, batch status updates) should use **`delegate_task`** subagents, not inline main-agent tool loops. Subagents run on OpenRouter `qwen/qwen3-coder` per `~/.hermes/config.yaml` → `delegation.*`. The main GPT-5.5 orchestrator should synthesize and present results only.
+Use **`delegate_task` automatically** for feedback triage/classification workloads. Do not wait for the user to explicitly request delegation.
+
+Subagents run on OpenRouter `qwen/qwen3-coder` per `~/.hermes/config.yaml` → `delegation.*`.
+
+GPT-5.5 remains the orchestrator and should synthesize/finalize results.
+
+Automatically delegate when:
+
+- more than 10 feedback items
+- more than 10 bug reports
+- more than 10 feature requests
+- more than 20 records need review/classification
+
+Also delegate by task type even below thresholds when the work is repetitive/batch (duplicate detection, sentiment analysis, translation passes, bulk summarization, backlog grooming, task extraction).
 
 See `scraplands-hermes/references/model_routing.md`.
 

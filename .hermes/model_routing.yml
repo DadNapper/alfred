@@ -63,3 +63,43 @@ fallback_chain:
     - openrouter/openai/gpt-5.5
     - openrouter/qwen/qwen3-coder
     - openrouter/openai/gpt-4.1-mini
+
+delegation_policy:
+  core_rule: "Hermes is an orchestrator. Delegate repetitive analysis work. Use GPT-5.5 as manager, not worker."
+  auto_delegate_model: qwen/qwen3-coder
+  auto_delegate_tasks:
+    - player_feedback_triage
+    - feedback_categorization
+    - duplicate_detection
+    - sentiment_analysis
+    - translation
+    - spreadsheet_review
+    - airtable_review
+    - google_sheets_processing
+    - bug_classification
+    - feature_request_classification
+    - bulk_text_analysis
+    - large_scale_summarization
+    - backlog_grooming
+    - task_extraction
+    - analytics_review
+    - monitoring_report_analysis
+  thresholds:
+    feedback_items_gt: 10
+    bug_reports_gt: 10
+    feature_requests_gt: 10
+    spreadsheet_pages_gt: 1
+    airtable_views_gt: 1
+    records_requiring_review_gt: 20
+  keep_on_gpt55:
+    - product_strategy
+    - roadmap_planning
+    - roblox_architecture
+    - economy_balancing
+    - technical_design
+    - system_design
+    - prioritization_decisions
+    - tradeoff_analysis
+    - final_recommendations
+    - user_facing_communication
+    - review_delegated_results
