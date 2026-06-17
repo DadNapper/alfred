@@ -252,7 +252,8 @@ Guidelines:
 - Use labels consistently: `priority:p0`–`priority:p3`, `priority:needs-triage`, `status:*`, `type:*`, `source:*`, and `area:*`.
 - Use the GitHub Project Status/Priority fields when API scopes allow it; otherwise apply fallback `status:*` labels and note that Project status could not be changed.
 - Keep Google Sheets for raw player feedback, CSV triage, metrics, and sortable external reports; link the canonical GitHub issue in sheet notes after triage.
-- Local repo files such as `ai/features/*.md` and `ai/tasks/active/*.md` are now optional shaping / Cursor-handoff artifacts, not the canonical tracker.
+- Do not create local `ai/tasks/` files; the `ai/tasks/` tracker is retired.
+- For Cursor work, Oz should copy the GitHub issue URL/body into Cursor. If Hermes needs more implementation detail, add it as a GitHub issue comment so the handoff stays attached to the canonical issue.
 - See repo `ai/workflows/github_task_tracking.md` and helper script `ai/tools/github_issues.py`.
 
 ## Task Lifecycle
@@ -268,7 +269,7 @@ new feedback/idea/bug
 → Done / Released
 → issue closed with linked commit/PR
 
-Use optional markdown handoff files only when an issue needs a long Cursor prompt, detailed acceptance criteria, or cross-file implementation plan. Link the file from the issue body/comment.
+Use GitHub issue bodies/comments for implementation details. Do not create local markdown handoff files; `ai/tasks/` has been retired.
 
 ## After Cursor Completes Work
 

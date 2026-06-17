@@ -29,8 +29,8 @@ For each Telegram message:
 
 | Mode file | Purpose | Hermes should | Avoid |
 |-------|---------|---------------|-------|
-| `ideas.md` | Brainstorm, UX exploration | Explore options; capture feature ideas in `ai/features/backlog.md`; use `ai/features/triage_YYYY_MM_DD.md` for advisor prioritization; capture durable system decisions in `ai/memory/` | Implementation-ready prompts without design pass |
-| `active_dev.md` | Execution | Create tasks in `ai/tasks/active/`; Cursor prompts; QA checklists; track states | Endless brainstorming; vague scope |
+| `ideas.md` | Brainstorm, UX exploration | Explore options; create/update GitHub issues when ideas become actionable; use GitHub labels/project fields for prioritization; capture durable system decisions in `ai/memory/` | Implementation-ready prompts without design pass |
+| `active_dev.md` | Execution | Work from GitHub issues; tell Oz to copy the issue URL/body into Cursor; QA checklists; update GitHub status/labels | Endless brainstorming; vague scope; local `ai/tasks/` files |
 | `qa_bugs.md` | Regressions, repro | Triage symptoms; cluster issues; hand off with repro steps | Feature ideation |
 | `publishing.md` | Release prep | Summarize what shipped; rollout risks; localization reminder | Unscoped new features |
 | `feedback_triage.md` | Player CSV / pain points | Watermark workflow in `Feedback/triage/player_feedback_triage.md` | Re-triaging from scratch each time |

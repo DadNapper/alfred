@@ -497,7 +497,7 @@ Recommended output shape:
 2. Include representative row/version evidence.
 3. Explain why it is P0 in one sentence.
 4. State likely fix direction and acceptance checks.
-5. Recommend creating `ai/tasks/active/p0-*.md` Cursor handoff files for each root-cause class.
+5. Recommend creating or updating a GitHub issue for each root-cause class.
 
 ---
 
@@ -533,23 +533,23 @@ Use this when Oz asks whether new Google Sheet rows can be combined with existin
 
 1. Snapshot the sheet before mutating it.
 2. Read all `status = new` rows, then map each row to one of:
-   - existing active task
-   - existing published task that may need reopening/regression verification
-   - existing backlog/feature/UX cluster
-   - genuinely new task candidate
+   - existing open GitHub issue
+   - recently published GitHub issue that may need reopening/regression verification
+   - existing backlog/feature/UX cluster in GitHub
+   - genuinely new issue candidate
 3. Update sheet `status` + `notes`, but **do not silently stop there**. After writing notes, explicitly summarize:
-   - which rows mapped to active tasks
-   - which rows map to published tasks as post-fix regression signals
+   - which rows mapped to open GitHub issues
+   - which rows map to published issues as post-fix regression signals
    - which rows are P0/P1 candidates
-   - whether any active task file should be updated or a published task should be reopened
+   - whether any GitHub issue should be updated or reopened
 4. Treat fresh post-publish reports as stronger signal than older backlog rows. A row newer than the shipped fix should usually stay `triaged`/open, not `fixed`, even if it overlaps the same cluster.
 5. Escalate to **P0** when a new row indicates high-value item loss, progress rollback, world-travel persistence loss, economy corruption, hard-lock/session-ending state, or paid/Robux-value loss. Example: gold nuggets/conveyor/furnace contents disappearing across world travel is P0 until disproven because it combines high-value item loss + world travel persistence + furnace lifecycle risk.
-6. If you only updated the sheet and not repo task files, say that plainly. If a new row materially changes an active task’s evidence or acceptance criteria, recommend or perform an active-task update when Oz asks.
-7. If Oz follows up with “create tickets,” “create active tasks,” or “ship it,” create or update GitHub issues for **each actionable root-cause class**, not just P0s. The GitHub issue is canonical; optional `ai/tasks/active/` files are only long-form Cursor handoff artifacts and must be linked from the issue.
+6. If you only updated the sheet and not GitHub issues, say that plainly. If a new row materially changes an issue’s evidence or acceptance criteria, update/comment on the GitHub issue when Oz asks.
+7. If Oz follows up with “create tickets,” “create GitHub issues,” or “ship it,” create or update GitHub issues for **each actionable root-cause class**, not just P0s. The GitHub issue is canonical; do not create local `ai/tasks/` files.
 8. For each GitHub issue: search duplicates first, include row/version evidence, likely scripts, required readings, investigation plan, acceptance criteria, priority rationale, and labels (`priority:*`, `type:*`, `area:*`, `source:player-feedback`, `status:ready` or `status:backlog`). Add the issue to the GitHub Project / status field when API scopes allow it.
 9. For docs-only issue/task creation, no README changelog or localization CSV is needed. Still run the ready-to-ship checks and use the Scraplands ship workflow once Oz explicitly asks to ship.
 
-See `references/feedback-to-active-tasks-2026-06-17.md` for a compact example of turning a small post-publish feedback batch into active task specs and a docs-only ship.
+See `references/feedback-to-github-issues-2026-06-17.md` for a compact example of turning a small post-publish feedback batch into GitHub issues.
 
 ## Large First-Pass Bug Triage Workflow
 

@@ -11,8 +11,8 @@ Local repo docs are supporting artifacts:
 - `ai/workflows/github_task_tracking.md` — complete GitHub issue/project workflow
 - `ai/tools/github_issues.py` — Hermes helper functions for issues, labels, comments, search, priority, and linking commits/PRs
 - `ai/features/*.md` — optional product-shaping docs for large ideas
-- `ai/tasks/active/*.md` — optional long-form Cursor handoff specs linked from issues
-- `ai/tasks/published/` — historical shipped records only, not the active tracker
+- GitHub issue body/comments — implementation details, Cursor handoffs, acceptance criteria, and investigation notes
+- `ai/tasks/` — retired; do not recreate local task files
 
 ## Recommended flow
 
