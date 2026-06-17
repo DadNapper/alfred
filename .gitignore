@@ -1,0 +1,179 @@
+# =====================================
+# Default: Ignore everything
+# =====================================
+
+*
+
+# =====================================
+# Git files
+# =====================================
+
+!.gitignore
+!README.md
+
+# =====================================
+# Hermes Core Config
+# =====================================
+
+!.hermes/
+!.hermes/config.yaml
+!.hermes/model_routing.yml
+!.hermes/identity.md
+!.hermes/SOUL.md
+
+# =====================================
+# Hermes Skills
+# =====================================
+
+!.hermes/skills/
+!.hermes/skills/**
+
+# =====================================
+# Hermes Scripts
+# =====================================
+
+!.hermes/scripts/
+!.hermes/scripts/**
+
+# =====================================
+# Hermes Integrations
+# =====================================
+
+!.hermes/integrations/
+!.hermes/integrations/**
+
+# =====================================
+# Hermes Hooks
+# =====================================
+
+!.hermes/hooks/
+!.hermes/hooks/**
+
+# =====================================
+# Hermes Cron Jobs
+# =====================================
+
+!.hermes/cron/
+!.hermes/cron/**
+
+# =====================================
+# Hermes Config Folder
+# =====================================
+
+!.hermes/config/
+!.hermes/config/**
+
+# =====================================
+# Optional Personal Docs
+# =====================================
+
+!maintenance/
+!maintenance/**
+
+!projects/
+!projects/**
+
+# =====================================
+# Ignore Generated Hermes Files
+# =====================================
+
+.hermes/logs/
+.hermes/cache/
+.hermes/tmp/
+.hermes/audio_cache/
+.hermes/image_cache/
+.hermes/artifacts/
+.hermes/sandboxes/
+.hermes/sessions/
+.hermes/state/
+.hermes/memories/
+.hermes/lsp/
+.hermes/pastes/
+.hermes/pairing/
+
+# =====================================
+# Ignore Databases
+# =====================================
+
+.hermes/*.db
+.hermes/*.db-*
+.hermes/*.lock
+
+# =====================================
+# Ignore Runtime Files
+# =====================================
+
+.hermes/*.pid
+.hermes/*.json
+.hermes/*.jsonl
+
+# Allow routing metadata back
+!.hermes/model_routing.yml
+!.hermes/channel_directory.json
+
+# =====================================
+# Ignore Node
+# =====================================
+
+node_modules/
+.npm/
+package-lock.json
+
+# =====================================
+# Ignore Python
+# =====================================
+
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.venvs/
+
+# =====================================
+# Ignore Secrets
+# =====================================
+
+secrets/
+.env
+.env.*
+auth.json
+*.pem
+*.key
+*.crt
+
+# =====================================
+# Ignore SSH
+# =====================================
+
+.ssh/
+
+# =====================================
+# Ignore Cursor Server
+# =====================================
+
+.cursor-server/
+
+# =====================================
+# Ignore Rust/Cargo
+# =====================================
+
+.cargo/
+.rustup/
+
+# =====================================
+# Ignore Shell History
+# =====================================
+
+.bash_history
+.zsh_history
+.viminfo
+
+# Maintenance backups
+maintenance/backups/
+
+# Maintenance logs
+maintenance/logs/
+
+# Optional runtime artifacts
+*.log
+*.tar.gz
