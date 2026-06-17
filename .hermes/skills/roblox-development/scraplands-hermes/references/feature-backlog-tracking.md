@@ -1,49 +1,64 @@
-# Scraplands Feature Backlog Tracking
+# Scraplands GitHub Backlog Tracking
 
 Use this when Oz asks to capture, import, triage, prioritize, or convert feature ideas.
 
-## Canonical repo locations
+## Source of truth
 
-- `ai/features/README.md` — feature tracking workflow and status definitions
-- `ai/features/backlog.md` — lightweight capture list for ideas before implementation
-- `ai/features/triage_YYYY_MM_DD.md` — advisor prioritization pass / roadmap recommendation
-- `ai/features/<feature_slug>.md` — shaped feature spec when an idea needs product design before implementation
-- `ai/tasks/active/<task_slug>.md` — implementation-approved task with Cursor prompt, acceptance criteria, and test plan
-- `ai/tasks/published/` — shipped/completed task records
+**GitHub Issues + the Scraplands GitHub Project are canonical for development tracking.**
+
+Local repo docs are supporting artifacts:
+
+- `ai/workflows/github_task_tracking.md` — complete GitHub issue/project workflow
+- `ai/tools/github_issues.py` — Hermes helper functions for issues, labels, comments, search, priority, and linking commits/PRs
+- `ai/features/*.md` — optional product-shaping docs for large ideas
+- `ai/tasks/active/*.md` — optional long-form Cursor handoff specs linked from issues
+- `ai/tasks/published/` — historical shipped records only, not the active tracker
 
 ## Recommended flow
 
 ```text
-Telegram idea
-→ ai/features/backlog.md
-→ ai/features/triage_YYYY_MM_DD.md when Oz wants advisor prioritization
-→ ai/features/<feature_slug>.md for shaping/design
-→ ai/tasks/active/<task_slug>.md only when Oz wants Cursor to implement
-→ ai/tasks/published/ after shipped
+Telegram idea / player feedback / bug report
+→ Hermes triage
+→ duplicate search in GitHub
+→ GitHub Issue
+→ GitHub Project Status + Priority
+→ optional feature spec or Cursor handoff linked from issue
+→ development branch / commit / PR links issue
+→ release verification
+→ close issue
 ```
 
-## Google Sheets vs repo
+## Google Sheets vs GitHub
 
 Use Google Sheets/CSV for raw player feedback, metrics, sortable triage batches, and external data.
 
-Use the repo as the canonical source for feature intent because Hermes/Cursor can retrieve it directly, it is versioned, and it can link to systems docs and task files.
+Use GitHub as the canonical source for actionable feature intent and implementation work because Hermes/Cursor can retrieve it, it supports labels/status/priority, it can link commits/PRs, and it avoids parallel local backlogs.
 
-## Importing feature CSVs
+After converting feedback into a GitHub issue, add the issue URL back to the sheet notes/status when appropriate.
 
-When Oz uploads a CSV backlog:
+## Importing feature CSVs or markdown backlog items
 
-1. Read the CSV.
-2. Decide whether the CSV is additive or authoritative:
+When Oz uploads a CSV backlog or asks to migrate markdown backlog items:
+
+1. Read the source.
+2. Cluster near-duplicates before creating tickets.
+3. Search GitHub first:
+
+   ```bash
+   python ai/tools/github_issues.py search "is:open <keywords>"
+   ```
+
+4. Decide whether the source is additive or authoritative:
    - If Oz says it is the “last/latest CSV,” says he removed unnecessary features, or asks to remove anything not in it, treat that CSV as the authoritative replacement set.
-   - In authoritative mode, prune backlog entries from prior imports that are not present in the latest CSV, preserving only items Oz explicitly names as exceptions.
-   - In additive mode, merge with `ai/features/backlog.md`; do not blindly duplicate near-identical items.
-3. Preserve useful wording from the newer CSV when it changes scope, but do not keep older scope/details that the latest authoritative CSV intentionally removed.
-4. Normalize into backlog entries with: Status, Priority, Area, Source, Captured date, Summary, Player value, Next action.
-5. Keep items as `idea` unless Oz explicitly approves implementation.
-6. If an imported priority is malformed (e.g. `PO`), preserve it and mark for triage instead of guessing.
-7. Verify after import/prune with a heading scan (`^### `) and a negative search for removed feature names before reporting completion.
+   - In authoritative mode, close or comment on superseded GitHub issues rather than leaving stale duplicates.
+   - In additive mode, create/update GitHub issues without blindly duplicating near-identical items.
+5. Preserve useful wording from the newer source when it changes scope, but do not keep older scope/details that the latest authoritative source intentionally removed.
+6. Create or update issues with: priority, area, source, captured/imported date, summary, player value, next action, and acceptance/shaping questions.
+7. Keep rough ideas in `status:backlog`; only use `status:ready` when implementation scope is clear.
+8. If an imported priority is malformed (e.g. `PO`), label `priority:needs-triage` and call it out for Oz instead of guessing.
+9. Verify by re-searching GitHub issues and reporting created, deduplicated, skipped, and human-review items.
 
-### Model routing for backlog grooming
+## Model routing for backlog grooming
 
 Treat backlog grooming as a delegate-first workflow.
 

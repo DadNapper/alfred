@@ -230,51 +230,45 @@ First investigation path:
 4. If removing a subsystem force-save, also clear only that field from any DataService pending bucket so `DataServicePending` does not create a redundant commit.
 5. Split save-capable `onPlayerRemoving` from cleanup-only session release when SaveCoordinator already handled the terminal save.
 
-## Feature Backlog and Task Lifecycle
+## GitHub Task Tracking and Lifecycle
 
-For Scraplands feature tracking, use a lightweight product funnel before creating implementation tasks:
+For Scraplands development tracking, **GitHub Issues + the Scraplands GitHub Project are the source of truth**.
 
 ```text
-Telegram idea
-→ ai/features/backlog.md
-→ ai/features/<feature_slug>.md when it needs shaping
-→ ai/tasks/active/<task_slug>.md when Oz approves implementation
-→ ai/tasks/published/ after shipped
+Feedback / idea / bug report
+→ Hermes triage
+→ GitHub Issue
+→ GitHub Project status + priority
+→ Development / optional Cursor handoff
+→ Commit + PR linked to issue
+→ Release
+→ Issue closed
 ```
 
 Guidelines:
 
-- Use `ai/features/backlog.md` for quick capture of future feature ideas, feature sparks, and rough product opportunities.
-- Use `ai/features/<feature_slug>.md` when an idea deserves product/design shaping before implementation.
-- Use `ai/tasks/active/` only when work is scoped enough for Cursor: clear goal, acceptance criteria, test plan, and implementation prompt.
-- Keep Google Sheets for raw player feedback, CSV triage, metrics, and sortable external reports; do not make spreadsheets the canonical source for feature intent.
-- Feature intent should live in the repo so Hermes/Cursor can retrieve it, version it, link it to docs, and convert it into tasks.
-- Do not turn every idea into an active task immediately; avoid over-structuring loose conversations.
+- Create or update a GitHub issue for every actionable bug, feature, tech-debt item, or player-feedback cluster.
+- Search existing issues before creating a new one; update/comment on duplicates instead of creating parallel tickets.
+- Use labels consistently: `priority:p0`–`priority:p3`, `priority:needs-triage`, `status:*`, `type:*`, `source:*`, and `area:*`.
+- Use the GitHub Project Status/Priority fields when API scopes allow it; otherwise apply fallback `status:*` labels and note that Project status could not be changed.
+- Keep Google Sheets for raw player feedback, CSV triage, metrics, and sortable external reports; link the canonical GitHub issue in sheet notes after triage.
+- Local repo files such as `ai/features/*.md` and `ai/tasks/active/*.md` are now optional shaping / Cursor-handoff artifacts, not the canonical tracker.
+- See repo `ai/workflows/github_task_tracking.md` and helper script `ai/tools/github_issues.py`.
 
 ## Task Lifecycle
 
-Loose idea capture and feature prioritization should use the feature backlog flow before becoming implementation work:
+Canonical issue flow:
 
-idea captured in `ai/features/backlog.md`
-→ advisor triage in `ai/features/triage_YYYY_MM_DD.md`
-→ shaped feature spec in `ai/features/<feature_slug>.md` when needed
-→ implementation task in `ai/tasks/active/<task_slug>.md`
+new feedback/idea/bug
+→ duplicate search
+→ GitHub issue with priority/area/type labels
+→ GitHub Project Backlog or Ready
+→ In Progress
+→ Needs Review / Testing
+→ Done / Released
+→ issue closed with linked commit/PR
 
-Implementation task lifecycle:
-
-idea
-→ ready_for_cursor
-→ in_cursor
-→ implemented
-→ needs_test
-→ tested
-→ ready_to_publish
-→ published
-→ done
-
-or
-
-blocked
+Use optional markdown handoff files only when an issue needs a long Cursor prompt, detailed acceptance criteria, or cross-file implementation plan. Link the file from the issue body/comment.
 
 ## After Cursor Completes Work
 
