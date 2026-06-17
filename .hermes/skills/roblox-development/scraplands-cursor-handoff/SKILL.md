@@ -84,6 +84,9 @@ Each actionable GitHub issue should include:
 ## Mode
 [bug fix | feature | refactor | commit prep | debug session | docs only]
 
+## Model
+Model: auto | medium | premium
+
 ## Constraints (non-negotiable)
 - StreamingEnabled: yes (almost always)
 - Persistence: [DataService / partial saves / v2 — if applicable]
@@ -103,9 +106,6 @@ Each actionable GitHub issue should include:
 1. [Observable behavior or test step]
 2. [Regression checks]
 
-## Model hint
-[cheap | premium — and why]
-
 ## Commit / issue linkage
 [yes/no commit prep]
 If committing, link with `Fixes #123` / `Closes #123` when appropriate, but keep the issue open until published.
@@ -115,7 +115,9 @@ If committing, link with `Fixes #123` / `Closes #123` when appropriate, but keep
 
 **Premium:** persistence, economy, rebirth, remotes, replication, StreamingEnabled, monetization, multi-file server work.
 
-**Cheap:** copy, changelogs, formatting, small client-only tweaks, docs under `ai/`.
+**Medium:** multi-file features, moderate complexity, cross-system changes, moderate risk.
+
+**Auto:** small fixes, changelogs, comments, formatting, docs under `ai/`.
 
 ## Task-type shortcuts
 

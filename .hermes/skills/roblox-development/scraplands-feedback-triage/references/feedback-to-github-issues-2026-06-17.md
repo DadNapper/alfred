@@ -14,10 +14,14 @@ Use when a small batch of fresh Google Sheet feedback has already been triaged a
    - `priority:p0` for data loss, high-value item loss, core-loop inventory/economy regressions, or multi-system race bugs
    - `priority:p1` for session-ending UI/control softlocks without confirmed data loss
    - `priority:p2` for QoL or visual/progression clarity issues
+   - `model:premium` for high-risk persistence/economy/server/monetization work
+   - `model:medium` for moderate multi-file or cross-system implementation
+   - `model:auto` for low-risk polish/docs/copy/UI-only work
    - `type:bug`, `source:player-feedback`, relevant `area:*`, and `status:ready` or `status:backlog`
 5. Issue structure:
    - Goal / Summary
    - Why priority
+   - Model hint (`## Model` / `Model: auto|medium|premium`)
    - Player evidence with row/version references
    - Hypothesis / product direction
    - Non-negotiable constraints

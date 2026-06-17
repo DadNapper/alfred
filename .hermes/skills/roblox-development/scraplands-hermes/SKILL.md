@@ -249,12 +249,14 @@ Guidelines:
 
 - Create or update a GitHub issue for every actionable bug, feature, tech-debt item, or player-feedback cluster.
 - Search existing issues before creating a new one; update/comment on duplicates instead of creating parallel tickets.
-- Use labels consistently: `priority:p0`–`priority:p3`, `priority:needs-triage`, `status:*`, `type:*`, `source:*`, and `area:*`.
+- Use labels consistently: `priority:p0`–`priority:p3`, `priority:needs-triage`, `status:*`, `type:*`, `source:*`, `model:*`, and `area:*`.
+- Include a model hint in the issue body (`## Model\nModel: auto|medium|premium`) and as a label (`model:auto`, etc.).
 - Use the GitHub Project Status/Priority fields when API scopes allow it; otherwise apply fallback `status:*` labels and note that Project status could not be changed.
 - Keep Google Sheets for raw player feedback, CSV triage, metrics, and sortable external reports; link the canonical GitHub issue in sheet notes after triage.
 - Do not create local `ai/tasks/` files; the `ai/tasks/` tracker is retired.
 - For Cursor work, Oz should copy the GitHub issue URL/body into Cursor. If Hermes needs more implementation detail, add it as a GitHub issue comment so the handoff stays attached to the canonical issue.
 - See repo `ai/workflows/github_task_tracking.md` and helper script `ai/tools/github_issues.py`.
+- See repo `ai/workflows/github_task_tracking.md`, helper script `ai/tools/github_issues.py`, and `references/github-task-tracking-transition-2026-06-17.md`.
 
 ## Task Lifecycle
 
