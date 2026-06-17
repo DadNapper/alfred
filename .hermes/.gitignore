@@ -1,4 +1,4 @@
-# Ignore everything
+# Ignore everything under ~/.hermes by default
 *
 
 # Allow traversal into directories
@@ -7,10 +7,22 @@
 # Keep git metadata
 !.gitignore
 
-# Keep top-level docs
+# Keep top-level docs and routing config (VPS backup repo tracks these)
 !SOUL.md
 !identity.md
+!config.yaml
+!model_routing.yml
 
-# Keep Roblox development skill tree
-!/roblox-development/
-!/roblox-development/**
+# Infrastructure dirs — root .gitignore re-ignores generated content inside them
+!hooks/
+!hooks/**
+!cron/
+!cron/**
+!scripts/
+!scripts/**
+!integrations/
+!integrations/**
+!config/
+!config/**
+
+# Skills tree is governed by skills/.gitignore (roblox-development only)

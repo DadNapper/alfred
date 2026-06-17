@@ -1,0 +1,65 @@
+# Human-readable routing map for Scraplands Hermes.
+# NOT loaded by Hermes core — runtime enforcement is in ~/.hermes/config.yaml
+#
+# Canonical agent playbook (load via scraplands-hermes):
+#   ~/.hermes/skills/roblox-development/scraplands-hermes/references/model_routing.md
+#
+# Skills index:
+#   ~/.hermes/skills/roblox-development/README.md
+
+canonical_doc: skills/roblox-development/scraplands-hermes/references/model_routing.md
+enforcement: config.yaml
+
+premium_orchestrator:
+  provider: openai-codex
+  model: gpt-5.5
+  config_keys:
+    - model.provider
+    - model.default
+  skills:
+    - scraplands-hermes
+    - solo-dev-advisor
+  responsibilities:
+    - product_design
+    - roblox_architecture
+    - feature_design
+
+subagent_openrouter:
+  provider: openrouter
+  model: qwen/qwen3-coder
+  config_keys:
+    - delegation.provider
+    - delegation.model
+  responsibilities:
+    - feedback_triage
+    - git_workflow
+    - cursor_handoffs
+
+auxiliary_openrouter:
+  provider: openrouter
+  models:
+    gpt-4.1-mini:
+      - compression
+      - title_generation
+      - web_extract
+      - approval
+      - monitor
+      - skills_hub
+      - mcp
+      - kanban_decomposer
+      - profile_describer
+    qwen3-coder:
+      - triage_specifier
+      - curator
+  config_keys:
+    - auxiliary.*
+  responsibilities:
+    - telegram_summaries
+    - admin_pm
+
+fallback_chain:
+  config_key: fallback_providers
+  entries:
+    - openrouter/openai/gpt-5.5
+    - openrouter/qwen/qwen3-coder
+    - openrouter/openai/gpt-4.1-mini

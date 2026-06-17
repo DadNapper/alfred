@@ -1,0 +1,90 @@
+{
+  "jobs": [
+    {
+      "id": "2ad4ed0261e4",
+      "name": "Daily Hermes update",
+      "prompt": "Update Hermes Agent to the latest available version. Run the official Hermes CLI updater (`hermes update`) and let it complete. Then run `npm install` in `/home/alfred/.hermes/hermes-agent` so the root/workspace JavaScript dependencies are refreshed after each Hermes update. Verify both commands exit successfully. If either command fails, report the exact failing command, exit code, and relevant output instead of guessing. Do not ask for clarification; this cron job runs unattended.",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 5 * * *",
+        "display": "0 5 * * *"
+      },
+      "schedule_display": "0 5 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 11
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-06-06T16:59:53.150715+00:00",
+      "next_run_at": "2026-06-18T05:00:00+00:00",
+      "last_run_at": "2026-06-17T05:00:35.231480+00:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "origin",
+      "origin": null,
+      "enabled_toolsets": [
+        "terminal"
+      ],
+      "workdir": null,
+      "profile": null
+    },
+    {
+      "id": "d635bf399be9",
+      "name": "Scraplands analytics monitor",
+      "prompt": "Run the Scraplands authenticated Roblox analytics monitor script. This is a script-only job; deliver stdout verbatim to the origin Telegram thread. The script combines public Roblox metrics with authenticated Creator Analytics data and includes a concise executive analysis.",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": "scraplands_analytics_monitor.py",
+      "no_agent": true,
+      "context_from": null,
+      "schedule": {
+        "kind": "interval",
+        "minutes": 720,
+        "display": "every 720m"
+      },
+      "schedule_display": "every 720m",
+      "repeat": {
+        "times": null,
+        "completed": 30
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-06-09T07:08:57.000215+00:00",
+      "next_run_at": "2026-06-17T10:55:30.139080+00:00",
+      "last_run_at": "2026-06-16T19:33:45.334140+00:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "origin",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "-1003907842203",
+        "chat_name": "Scraplands",
+        "thread_id": "2"
+      },
+      "enabled_toolsets": [
+        "terminal"
+      ],
+      "workdir": null,
+      "profile": null
+    }
+  ],
+  "updated_at": "2026-06-17T07:15:41.369184+00:00"
+}
