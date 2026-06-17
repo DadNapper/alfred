@@ -12,6 +12,7 @@ The repo-local `ai/tasks/` workflow is retired:
 - Do not recreate `ai/tasks/` for long Cursor handoffs.
 - Put implementation context in the GitHub issue body or issue comments.
 - Use GitHub labels/project fields for priority and status.
+- Every implementation issue should include a Cursor model hint both in the body (`## Model` / `Model: auto|medium|premium`) and as a matching `model:*` label.
 
 ## Oz → Cursor bug-fix handoff
 

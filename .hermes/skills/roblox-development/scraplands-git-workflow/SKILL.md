@@ -23,7 +23,7 @@ Multi-step git batches (sync + inspect + ship prep across many files) should use
 
 1. **Sync** — `scrapupdate` (before starting any work)
 2. **Work** — edit files; do not pull/rebase/merge mid-task
-3. **Pre-ship scope check** — before running `ship.sh`, inspect `git status --short`, `git diff --stat`, and `git diff --name-only`. The ship script runs `git add .`, so **any untracked or unrelated file will be committed** unless removed/stashed first.
+3. **Pre-ship scope check** — before running `ship.sh`, inspect `git status --short`, `git diff --stat`, and `git diff --name-only`. The ship script runs `git add .`, so **any untracked or unrelated file will be committed** unless removed/stashed first. Remove generated artifacts (`__pycache__/`, `*.pyc`, temporary patch files, helper state JSON) before shipping.
 4. **Ship** — when Oz says "ready to ship", follow repo `ai/workflows/ready_to_ship.md`, then use `./shellScripts/ship.sh "commit message"` when commit/push is approved
 
 ## Never
@@ -54,9 +54,10 @@ git config --global user.email "alfred@scraplands.dev"  # or project email
 If the commit was created but push was rejected with `fetch first`:
 
 1. Run `git fetch origin` and inspect `git status -sb` plus `git log --oneline --decorate --left-right HEAD...origin/main`.
-2. If local branch is exactly one Alfred commit ahead and only behind new remote commits, rebase that local commit onto `origin/main` (`git rebase origin/main`).
-3. Push using `./shellScripts/push.sh`.
-4. Re-verify clean tracking state and latest commit SHA before telling Oz it shipped.
+2. Before rebasing/pushing, inspect the local commit with `git show --stat --name-status HEAD`. If `ship.sh` accidentally staged generated/unrelated files (`__pycache__/`, `*.pyc`, temporary patch files, helper state JSON), remove them and `git commit --amend --no-edit` while the commit is still local-only.
+3. If local branch is exactly one Alfred commit ahead and only behind new remote commits, rebase that local commit onto `origin/main` (`git rebase origin/main`).
+4. Push using `./shellScripts/push.sh`.
+5. Re-verify clean tracking state and latest commit SHA before telling Oz it shipped.
 
 Do **not** force-push or reset to recover from this; escalate if the rebase conflicts.
 
