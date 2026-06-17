@@ -67,6 +67,7 @@
 .hermes/state/
 .hermes/state-snapshots/
 .hermes/tmp/
+.hermes/cron/output/
 
 # =====================================
 # Ignore Hermes Runtime Files

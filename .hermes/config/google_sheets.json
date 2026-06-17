@@ -1,0 +1,10 @@
+{
+  "credentials_file": "/home/alfred/secrets/google-service-account.json",
+
+  "spreadsheets": {
+    "player_feedback": {
+      "id": "1kDlKa_MlYO_CH4voe2QYeYwPzmQmTOf0oEGAEksUO94",
+      "sheet": "PlayerFeedback"
+    }
+  }
+}

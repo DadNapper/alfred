@@ -532,6 +532,10 @@ Use this when Oz asks whether new Google Sheet rows can be combined with existin
 4. Treat fresh post-publish reports as stronger signal than older backlog rows. A row newer than the shipped fix should usually stay `triaged`/open, not `fixed`, even if it overlaps the same cluster.
 5. Escalate to **P0** when a new row indicates high-value item loss, progress rollback, world-travel persistence loss, economy corruption, hard-lock/session-ending state, or paid/Robux-value loss. Example: gold nuggets/conveyor/furnace contents disappearing across world travel is P0 until disproven because it combines high-value item loss + world travel persistence + furnace lifecycle risk.
 6. If you only updated the sheet and not repo task files, say that plainly. If a new row materially changes an active task’s evidence or acceptance criteria, recommend or perform an active-task update when Oz asks.
+7. If Oz follows up with “create active task files” or “ship it,” create implementation-ready specs under `ai/tasks/active/` for **each actionable root-cause class**, not just P0s. Use priority/model-hint filenames (`p0-…(model:premium).md`, `p1-…`, `p2-…`) and mark `Status: ready_for_cursor`. Include row/version evidence, related published tasks, likely scripts, required readings, investigation plan, acceptance criteria, and a Cursor prompt block.
+8. For docs-only active task creation, no README changelog or localization CSV is needed. Still run the ready-to-ship checks and use the Scraplands ship workflow once Oz explicitly asks to ship.
+
+See `references/feedback-to-active-tasks-2026-06-17.md` for a compact example of turning a small post-publish feedback batch into active task specs and a docs-only ship.
 
 ## Large First-Pass Bug Triage Workflow
 

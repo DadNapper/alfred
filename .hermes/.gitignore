@@ -18,6 +18,7 @@
 !hooks/**
 !cron/
 !cron/**
+cron/output/**
 !scripts/
 !scripts/**
 !integrations/

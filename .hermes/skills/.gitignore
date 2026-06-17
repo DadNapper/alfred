@@ -10,3 +10,7 @@
 # Keep Roblox development skill tree only (paths relative to this file)
 !roblox-development/
 !roblox-development/**
+
+# Editor swap files
+*.swp
+*~

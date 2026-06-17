@@ -23,7 +23,8 @@ Multi-step git batches (sync + inspect + ship prep across many files) should use
 
 1. **Sync** — `scrapupdate` (before starting any work)
 2. **Work** — edit files; do not pull/rebase/merge mid-task
-3. **Ship** — when Oz says "ready to ship", follow repo `ai/workflows/ready_to_ship.md`, then use `./shellScripts/ship.sh "commit message"` when commit/push is approved
+3. **Pre-ship scope check** — before running `ship.sh`, inspect `git status --short`, `git diff --stat`, and `git diff --name-only`. The ship script runs `git add .`, so **any untracked or unrelated file will be committed** unless removed/stashed first.
+4. **Ship** — when Oz says "ready to ship", follow repo `ai/workflows/ready_to_ship.md`, then use `./shellScripts/ship.sh "commit message"` when commit/push is approved
 
 ## Never
 
