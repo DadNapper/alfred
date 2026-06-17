@@ -67,11 +67,8 @@
 # Optional Personal Docs
 # =====================================
 
-!maintenance/
-!maintenance/**
-
-!projects/
-!projects/**
+projects/
+projects/**
 
 # =====================================
 # Ignore Generated Hermes Files
