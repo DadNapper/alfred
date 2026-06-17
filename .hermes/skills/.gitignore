@@ -1,0 +1,12 @@
+# Ignore everything under skills/
+*
+
+# Allow traversal into directories
+!*/
+
+# Keep git metadata
+!.gitignore
+
+# Keep Roblox development skill tree only (paths relative to this file)
+!roblox-development/
+!roblox-development/**
