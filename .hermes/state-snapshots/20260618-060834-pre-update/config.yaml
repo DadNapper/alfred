@@ -4,6 +4,8 @@ model:
   base_url: https://chatgpt.com/backend-api/codex
 providers: {}
 fallback_providers:
+- provider: openai-api
+  model: gpt-4.1-mini
 - provider: openrouter
   model: openai/gpt-5.5
 - provider: openrouter
@@ -174,7 +176,7 @@ bedrock:
     trace: disabled
 auxiliary:
   vision:
-    provider: auto
+    provider: openai-api
     model: ''
     base_url: ''
     api_key: ''
@@ -182,92 +184,92 @@ auxiliary:
     extra_body: {}
     download_timeout: 30
   web_extract:
-    provider: openrouter
+    provider: openai-api
     model: openai/gpt-4.1-mini
     base_url: ''
     api_key: ''
     timeout: 360
     extra_body: {}
   compression:
-    provider: openrouter
+    provider: openai-api
     model: openai/gpt-4.1-mini
     base_url: ''
     api_key: ''
     timeout: 120
     extra_body: {}
   skills_hub:
-    provider: openrouter
+    provider: openai-api
     model: openai/gpt-4.1-mini
     base_url: ''
     api_key: ''
     timeout: 30
     extra_body: {}
   approval:
-    provider: openrouter
+    provider: openai-api
     model: openai/gpt-4.1-mini
     base_url: ''
     api_key: ''
     timeout: 30
     extra_body: {}
   mcp:
-    provider: openrouter
+    provider: openai-api
     model: openai/gpt-4.1-mini
     base_url: ''
     api_key: ''
     timeout: 30
     extra_body: {}
   title_generation:
-    provider: openrouter
+    provider: openai-api
     model: openai/gpt-4.1-mini
     base_url: ''
     api_key: ''
     timeout: 30
     extra_body: {}
   tts_audio_tags:
-    provider: auto
+    provider: openai-api
     model: ''
     base_url: ''
     api_key: ''
     timeout: 30
     extra_body: {}
   triage_specifier:
-    provider: openrouter
+    provider: openai-api
     model: qwen/qwen3-coder
     base_url: ''
     api_key: ''
     timeout: 120
     extra_body: {}
   kanban_decomposer:
-    provider: openrouter
+    provider: openai-api
     model: openai/gpt-4.1-mini
     base_url: ''
     api_key: ''
     timeout: 180
     extra_body: {}
   profile_describer:
-    provider: openrouter
+    provider: openai-api
     model: openai/gpt-4.1-mini
     base_url: ''
     api_key: ''
     timeout: 60
     extra_body: {}
   curator:
-    provider: openrouter
+    provider: openai-api
     model: qwen/qwen3-coder
     base_url: ''
     api_key: ''
     timeout: 600
     extra_body: {}
   monitor:
-    provider: openrouter
+    provider: openai-api
     model: openai/gpt-4.1-mini
     base_url: ''
     api_key: ''
     timeout: 60
     extra_body: {}
 display:
-  compact: false
-  personality: kawaii
+  compact: true
+  personality: concise
   resume_display: full
   resume_exchanges: 10
   resume_max_user_chars: 300
@@ -290,7 +292,7 @@ display:
   inline_diffs: true
   file_mutation_verifier: true
   credits_notices: true
-  turn_completion_explainer: true
+  turn_completion_explainer: false
   show_cost: false
   skin: default
   language: en
@@ -298,7 +300,7 @@ display:
   user_message_preview:
     first_lines: 2
     last_lines: 2
-  interim_assistant_messages: true
+  interim_assistant_messages: false
   tool_progress_command: false
   tool_progress_overrides: {}
   tool_preview_length: 0
@@ -306,17 +308,20 @@ display:
   ephemeral_system_ttl: 0
   platforms:
     telegram:
-      streaming: true
+      streaming: false
+      tool_progress: false
+      runtime_footer:
+        enabled: true
+        fields:
+        - model
     discord:
       streaming: false
   runtime_footer:
-    enabled: false
+    enabled: true
     fields:
     - model
-    - context_pct
-    - cwd
   copy_shortcut: auto
-  tool_progress: all
+  tool_progress: false
   cleanup_progress: false
   background_process_notifications: all
 dashboard:
@@ -495,6 +500,8 @@ approvals:
   mcp_reload_confirm: true
   destructive_slash_confirm: true
 command_allowlist:
+- stop/restart hermes gateway (kills running agents)
+- recursive delete
 - execute_code
 quick_commands: {}
 hooks: {}
