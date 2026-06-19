@@ -66,7 +66,7 @@
 .hermes/sandboxes/
 .hermes/sessions/
 .hermes/state/
-.hermes/state-snapshots/
+.hermes/state-snapshots/*
 .hermes/tmp/
 .hermes/cron/output/
 
