@@ -177,7 +177,7 @@ def pct_change(current: float | int | None, baseline: float | int | None) -> flo
     return ((float(current) - float(baseline)) / float(baseline)) * 100
 
 
-def fmt_num(value: float | int | None, decimals: int = 0) -> str:
+def fmt_num(value: Any, decimals: int = 0) -> str:
     if value is None:
         return "n/a"
     if decimals == 0:
@@ -185,7 +185,7 @@ def fmt_num(value: float | int | None, decimals: int = 0) -> str:
     return f"{float(value):,.{decimals}f}"
 
 
-def fmt_pct(value: float | int | None, already_percent: bool = False) -> str:
+def fmt_pct(value: Any, already_percent: bool = False) -> str:
     if value is None:
         return "n/a"
     pct_value = float(value) if already_percent else float(value) * 100
@@ -209,6 +209,17 @@ def signed_delta(current: int | float | None, previous: int | float | None, deci
     if decimals == 0:
         return f" ({delta:+,.0f})"
     return f" ({delta:+,.{decimals}f})"
+
+
+def fmt_abs_delta(current: Any, previous: Any, decimals: int = 0) -> str:
+    if current is None or previous is None:
+        return "n/a"
+    delta = float(current) - float(previous)
+    if abs(delta) < 0.0001:
+        return "±0"
+    if decimals == 0:
+        return f"{delta:+,.0f}"
+    return f"{delta:+,.{decimals}f}"
 
 
 def build_analysis(public: dict[str, Any], analytics: dict[str, Any], previous: dict[str, Any]) -> str:
@@ -284,25 +295,49 @@ def main() -> int:
     latest_date = next((v.get("latest_date") for v in analytics.values() if v.get("latest_date")), "n/a")
 
     lines = [
-        "## Scraplands analytics monitor",
-        f"- Sample: {sampled_at} UTC",
-        f"- Creator Analytics date: {latest_date} (latest complete day)",
+        "## Scraplands Analytics Monitor",
+        "",
+        f"**Sampled:** `{sampled_at} UTC`",
+        f"**Creator Analytics:** `{latest_date}` *(latest complete day)*",
+        "",
     ]
 
+    if analytics:
+        lines.extend(
+            [
+                "### Executive read",
+                "",
+                build_analysis(public, analytics, previous),
+                "",
+            ]
+        )
+
+    lines.extend(["### Public live snapshot", ""])
     if public.get("error"):
-        lines.append(f"- Public Roblox metrics: failed — {public['error']}")
+        lines.append(f"- **Public Roblox metrics failed:** {public['error']}")
     else:
         like_ratio = public.get("like_ratio")
         lines.extend(
             [
-                f"- Public now: CCU {fmt_num(public.get('playing'))}{signed_delta(public.get('playing'), prev_public.get('playing'))}; visits {fmt_num(public.get('visits'))}{signed_delta(public.get('visits'), prev_public.get('visits'))}; favorites {fmt_num(public.get('favorites'))}{signed_delta(public.get('favorites'), prev_public.get('favorites'))}",
-                f"- Public sentiment: {fmt_num(public.get('up_votes'))} up / {fmt_num(public.get('down_votes'))} down — like ratio {fmt_pct(like_ratio, already_percent=True)}{signed_delta(like_ratio, prev_public.get('like_ratio'), 1)}",
-                f"- Server sample: {fmt_num(public.get('server_count_sampled'))} active, {fmt_num(public.get('full_servers_sampled'))} full, {fmt_num(public.get('sampled_playing'))}/{fmt_num(public.get('sampled_capacity'))} sampled capacity; avg FPS {fmt_num(public.get('avg_fps'), 1)}, avg ping {fmt_num(public.get('avg_ping'), 1)}ms, max ping {fmt_num(public.get('max_ping'), 1)}ms",
+                "| Metric | Current | Change since last sample |",
+                "|---|---:|---:|",
+                f"| CCU | {fmt_num(public.get('playing'))} | {fmt_abs_delta(public.get('playing'), prev_public.get('playing'))} |",
+                f"| Total visits | {fmt_num(public.get('visits'))} | {fmt_abs_delta(public.get('visits'), prev_public.get('visits'))} |",
+                f"| Favorites | {fmt_num(public.get('favorites'))} | {fmt_abs_delta(public.get('favorites'), prev_public.get('favorites'))} |",
+                f"| Like ratio | {fmt_pct(like_ratio, already_percent=True)} | {fmt_abs_delta(like_ratio, prev_public.get('like_ratio'), 1)} pts |",
+                "",
+                "**Server sample**",
+                "",
+                f"- **Servers:** {fmt_num(public.get('server_count_sampled'))} active / {fmt_num(public.get('full_servers_sampled'))} full",
+                f"- **Capacity sampled:** {fmt_num(public.get('sampled_playing'))}/{fmt_num(public.get('sampled_capacity'))} players",
+                f"- **Performance:** {fmt_num(public.get('avg_fps'), 1)} FPS avg, {fmt_num(public.get('avg_ping'), 1)}ms avg ping, {fmt_num(public.get('max_ping'), 1)}ms max ping",
+                f"- **Votes:** {fmt_num(public.get('up_votes'))} up / {fmt_num(public.get('down_votes'))} down",
             ]
         )
 
+    lines.extend(["", "### Creator Analytics", ""])
     if analytics:
-        def row(key: str, label: str, formatter: str = "num", decimals: int = 0) -> str:
+        def row(key: str, label: str, formatter: str = "num", decimals: int = 0, suffix: str = "") -> str:
             item = analytics.get(key, {})
             value = item.get("latest_value")
             baseline = item.get("baseline")
@@ -313,29 +348,35 @@ def main() -> int:
             else:
                 value_text = fmt_num(value, decimals)
                 base_text = fmt_num(baseline, decimals)
-            return f"- {label}: {value_text} ({fmt_delta_pct(delta)} vs 7-day baseline {base_text})"
+            if suffix:
+                value_text = f"{value_text} {suffix}"
+                base_text = f"{base_text} {suffix}"
+            return f"| {label} | {value_text} | {base_text} | {fmt_delta_pct(delta)} |"
 
         lines.extend(
             [
+                "| Metric | Latest | 7-day baseline | Δ |",
+                "|---|---:|---:|---:|",
                 row("dau", "DAU"),
-                row("visits", "Creator visits"),
+                row("visits", "Visits"),
                 row("avg_ccu", "Avg CCU", decimals=1),
-                row("avg_session_min", "Avg session", decimals=1) + " min",
-                row("playtime_hours", "Total playtime", decimals=1) + " hours",
+                row("avg_session_min", "Avg session", decimals=1, suffix="min"),
+                row("playtime_hours", "Total playtime", decimals=1, suffix="hours"),
                 row("d1_retention", "D1 retention", "pct"),
                 row("d7_retention", "D7 retention", "pct"),
-                row("revenue_robux", "Revenue" ) + " Robux",
-                row("arpu", "ARPU", decimals=2) + " Robux/user",
+                row("revenue_robux", "Revenue", suffix="Robux"),
+                row("arpu", "ARPU", decimals=2, suffix="Robux/user"),
                 row("paying_users", "Paying users"),
                 row("payer_cvr", "Payer conversion", "pct"),
             ]
         )
-        lines.append(f"- Executive analysis: {build_analysis(public, analytics, previous)}")
     else:
-        lines.append("- Creator Analytics: unavailable")
+        lines.append("- **Creator Analytics unavailable.**")
 
     if errors:
-        lines.append("- Analytics warnings: " + " | ".join(errors[:3]))
+        lines.extend(["", "### Warnings", ""])
+        for error in errors[:3]:
+            lines.append(f"- {error}")
 
     print("\n".join(lines))
     return 0 if analytics or not errors else 1
