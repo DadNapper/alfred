@@ -202,6 +202,12 @@ Delegation smoke test:
 
 Then confirm the delegated worker used `provider=openrouter` and `model=qwen/qwen3-coder` in Hermes logs if needed.
 
+### Routing-change pitfalls
+
+- Do not stop after writing the routing policy. Verify the runtime path with `hermes fallback list`, `hermes config check`, and a Qwen smoke test.
+- If `hermes chat ... --provider openrouter -m qwen/qwen3-coder` returns `HTTP 401: Missing Authentication header`, fix OpenRouter auth with `hermes auth add openrouter` or a valid `OPENROUTER_API_KEY` in `~/.hermes/.env`, then start a fresh session and re-run the smoke test.
+- If setting `fallback_providers` through `hermes config set` causes `hermes fallback list` to report no fallbacks, inspect for a stringified JSON/YAML value and rewrite it as a real YAML list. Always re-run `hermes fallback list` after changing fallback order.
+
 After changing `config.yaml`, restart the gateway so new Telegram sessions pick up routing:
 
 ```bash
