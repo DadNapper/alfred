@@ -1,120 +1,184 @@
 # Model Routing (Scraplands Hermes)
 
-Hermes uses an **orchestrator pattern**: the main session stays on premium GPT-5.5 (OpenAI Codex). Cheap or batch work goes to OpenRouter via subagents and auxiliary slots.
+Hermes uses a **role-based orchestrator pattern**, not task routing by fallback order.
 
-## Global delegation policy (default behavior)
+Fallback providers are only for provider failures: rate limits, 5xxs, connection errors, auth/provider interruptions. They are not a model-selection policy.
 
-Hermes is an orchestrator. Delegate repetitive analysis work by default.
+## Roles
 
-### Always delegate to Qwen3 Coder
+### Primary Orchestrator
 
-Use `delegate_task` automatically for:
+- **Provider:** `openai-codex`
+- **Model:** `gpt-5.5`
+- **Config:** `~/.hermes/config.yaml` → `model.provider`, `model.default`
+- **Responsibility:** project lead, reasoning engine, final reviewer, user-facing synthesis.
 
-- player feedback triage
-- feedback categorization
-- duplicate detection
-- sentiment analysis
-- translation
-- spreadsheet review
-- Airtable review
-- Google Sheets processing
-- bug classification
-- feature request classification
-- bulk text analysis
-- large-scale summarization
-- backlog grooming
-- task extraction
-- analytics review
-- monitoring report analysis
+Use GPT-5.5 for:
 
-### Delegation thresholds
+- Product decisions
+- Game design
+- Economy balancing
+- Monetization decisions
+- UX/UI decisions
+- Roblox architecture and system design
+- Planning
+- Feature specifications
+- Bug triage synthesis
+- Changelog generation
+- Documentation direction
+- Copywriting and localization review
+- Roadmapping and prioritization
+- Strategic decisions
+- Project management
+- Final recommendations after delegated work
 
-Automatically delegate when any of the following is true:
+### Coding Worker
 
-- more than 10 feedback items
-- more than 10 bug reports
-- more than 10 feature requests
-- more than 1 spreadsheet page
-- more than 1 Airtable view
-- more than 20 records requiring classification/review
+- **Provider:** `openrouter`
+- **Model:** `qwen/qwen3-coder`
+- **Config:** `~/.hermes/config.yaml` → `delegation.provider`, `delegation.model`
+- **Mechanism:** `delegate_task`
+- **Responsibility:** primary software engineer for implementation, codebase navigation, static analysis, code review, and root-cause work.
 
-### Keep GPT-5.5 on orchestration work
+Use Qwen3-Coder for:
 
-Keep these on the main GPT-5.5 session:
+- Roblox/Luau implementation
+- Refactors
+- Multi-file code changes
+- Performance optimization
+- Static analysis
+- Code review
+- Root cause analysis
+- Test generation
+- GitHub issue implementation
+- Large codebase navigation
+- Roblox/Luau code generation
+- Mechanical git/diff analysis when scoped by GPT-5.5
+- Bulk feedback/bug/feature classification when the job is analysis-heavy
 
-- product strategy
-- roadmap planning
-- Roblox architecture
-- economy balancing
-- technical/system design
-- prioritization and tradeoff decisions
-- final recommendations and user-facing communication
-- review/synthesis of delegated results
+### Lightweight Worker
 
-## Documentation layers
+- **Provider:** `openai-api` or configured auxiliary provider
+- **Model:** `openai/gpt-4.1-mini` / `gpt-4.1-mini`
+- **Config:** `~/.hermes/config.yaml` → `auxiliary.*`, selected helper/fallback slots
+- **Responsibility:** low-cost utility work.
 
-| Layer | Location | Read by Hermes? |
-|-------|----------|-----------------|
-| Runtime config | `~/.hermes/config.yaml` | **Yes** — `model`, `delegation`, `auxiliary`, `fallback_providers` |
-| Agent playbook | This file | **Yes** — when `scraplands-hermes` loads this reference |
-| Human YAML index | `~/.hermes/model_routing.yml` | No — quick map for humans only |
-| Per-skill hints | `scraplands-feedback-triage`, `scraplands-git-workflow`, `scraplands-cursor-handoff` | Yes — short delegate reminders |
+Use GPT-4.1-mini for:
 
-**Rule:** When routing changes, edit `config.yaml` first, then update this file and `model_routing.yml`. Never put API keys in skills.
+- Summaries
+- Formatting
+- Data transformation
+- Small helper tasks
+- Log cleanup
+- Simple documentation generation
+- Titles, compression, monitoring summaries, and other auxiliary side jobs
+
+## Automatic delegation rules
+
+Hermes should automatically delegate to Qwen3-Coder when any of these are true:
+
+- More than one file is involved
+- Estimated change exceeds 200 lines
+- Oz requests implementation
+- Oz requests a refactor
+- Oz requests a code review
+- Oz requests performance optimization
+- Oz requests bug investigation
+- Oz requests architecture validation with codebase inspection
+- Oz requests GitHub issue implementation
+- Oz requests Roblox/Luau code generation
+- The task requires static analysis across multiple files
+- The task requires root-cause analysis in code
+- The task requires test generation or validation scripts
+
+Hermes should keep work on GPT-5.5 when the task is primarily:
+
+- Product design discussion
+- Game economy balancing
+- Monetization decisions
+- UX/UI decisions
+- Roadmapping
+- Feature prioritization
+- Changelog writing
+- Copywriting
+- Localization review
+- Strategic decisions
+- Final decision-making after delegated implementation/review
+
+## Coding workflow
+
+For coding tasks:
+
+1. GPT-5.5 analyzes the request and project context.
+2. GPT-5.5 creates a clear implementation plan and acceptance criteria.
+3. Delegate implementation work to Qwen3-Coder with the exact scope, files, commands, and Scraplands constraints.
+4. Receive implementation results with file paths, commands run, test/static-analysis output, and any unresolved risks.
+5. GPT-5.5 reviews the result for correctness, maintainability, Roblox constraints, product alignment, and rollout safety.
+6. Present Oz with the final recommendation, evidence, and next action.
+
+For large coding tasks:
+
+1. Break work into smaller subtasks.
+2. Delegate independent subtasks to Qwen3-Coder.
+3. Avoid parallel workers touching the same files.
+4. Aggregate results.
+5. Run or request final verification.
+6. GPT-5.5 performs final review and synthesis.
+
+## Scraplands implementation guardrails
+
+When delegating Scraplands coding work, include these constraints in the Qwen context:
+
+- Repo: `~/projects/scraplands`
+- Read `AGENTS.md`, `ai/README.md`, relevant workflows, and feature docs first.
+- No Rojo; Script Sync workflow only.
+- New scripts go under service `Scripts/` folders.
+- Suffixes: `.legacy.luau` for server scripts, `.local.luau` for client scripts, `.luau` for modules.
+- StreamingEnabled is always enabled.
+- All persistent writes go through DataService / PlayerData_v2 patterns.
+- Avoid DataStore write pressure and duplicate leave-time saves.
+- Do not enable live-ops/tester gates server-wide based on any tester online; keep eligibility per-player unless explicitly isolated to private-server-owner testing.
+- Never force push, rebase, reset hard, delete branches, or ship without Oz's approval.
+- Never leave `DEBUG_ENABLED = true`.
+- Run targeted Selene/StyLua/Luau analysis when applicable and report real output.
 
 ## Responsibility → model
 
 | Responsibility | Model | How it is enforced |
-|----------------|-------|-------------------|
-| Roblox implementation | GPT-5.5 (Cursor) | Cursor implements; Hermes orchestrates |
-| Product / design / advisor | GPT-5.5 | `model.provider` / `model.default` |
-| Feedback triage (bulk) | Qwen3 Coder | `delegate_task` → `delegation.*` |
-| Git workflow (mechanical) | Qwen3 Coder | `delegate_task` → `delegation.*` |
-| Cursor handoff drafts | Qwen3 Coder | `delegate_task` → `delegation.*` |
-| Telegram summaries / admin PM | GPT-4.1 Mini | `auxiliary.*` (compression, titles, web extract, …) |
-| Codex unavailable / rate limited | OpenRouter chain | `fallback_providers` (per turn) |
+|---|---|---|
+| Project lead / reasoning | GPT-5.5 | `model.provider=openai-codex`, `model.default=gpt-5.5` |
+| Product / design / economy / UX | GPT-5.5 | main session stays on GPT-5.5 |
+| Architecture / planning / specifications | GPT-5.5 | main session, with Qwen codebase inspection when needed |
+| Roblox/Luau implementation | Qwen3-Coder | `delegate_task` → `delegation.*` |
+| Refactors / multi-file edits | Qwen3-Coder | automatic delegation trigger |
+| Code review / RCA / static analysis | Qwen3-Coder | automatic delegation trigger, GPT-5.5 final synthesis |
+| GitHub issue implementation | Qwen3-Coder | delegate implementation worker |
+| Summaries / formatting / simple transforms | GPT-4.1-mini | `auxiliary.*` or explicit lightweight helper |
+| Provider failure | fallback chain | only when provider/model call fails |
 
-Premium skills that stay on the main agent: `scraplands-hermes`, `solo-dev-advisor`.
+## Runtime config map
 
-## Main agent (orchestrator)
+| Layer | Location | Read by Hermes? |
+|---|---|---|
+| Runtime config | `~/.hermes/config.yaml` | **Yes** — `model`, `delegation`, `auxiliary`, `fallback_providers` |
+| Agent playbook | This file | **Yes** — when `scraplands-hermes` loads this reference |
+| Human YAML index | `~/.hermes/model_routing.yml` | No — quick map for humans only |
+| Per-skill hints | Scraplands skills | Yes — short delegate reminders |
 
-- **Provider:** `openai-codex`
-- **Model:** `gpt-5.5`
-- **Use for:** product/design decisions, Roblox architecture, feature design, advisor reasoning
-- **Config:** `~/.hermes/config.yaml` → `model.default` / `model.provider`
+Rule: when routing changes, edit `config.yaml` first, then update this file and `model_routing.yml`. Never put API keys in skills.
 
-Roblox **implementation** is Cursor's job, not the main Hermes loop.
+## Fallback policy
 
-## Subagents (`delegate_task`)
+Fallbacks are provider-failure recovery only. They should not be used as task routing.
 
-- **Provider:** `openrouter`
-- **Model:** `qwen/qwen3-coder`
-- **Use for:** feedback triage batches, git workflow steps, Cursor handoff prompt drafting
-- **Config:** `~/.hermes/config.yaml` → `delegation.provider` / `delegation.model`
+Preferred fallback order when GPT-5.5 via OpenAI Codex is unavailable:
 
-**Rule:** Do not burn GPT-5.5 on bulk triage, classification, or long mechanical analysis passes. Delegate first; synthesize results on the main agent.
+1. `openrouter` / `openai/gpt-5.5` — preserve orchestrator quality if possible.
+2. `openrouter` / `qwen/qwen3-coder` — capable coding/reasoning backup.
+3. `openai-api` / `gpt-4.1-mini` — low-cost emergency continuation.
+4. `openrouter` / `openai/gpt-4.1-mini` — final backup.
 
-## Auxiliary side jobs
-
-| Task | Model | Typical use |
-|------|-------|-------------|
-| `compression`, `title_generation`, `web_extract`, `approval`, `monitor`, `skills_hub`, `mcp`, `kanban_decomposer`, `profile_describer` | `openai/gpt-4.1-mini` | Telegram summaries, admin/PM, context compression |
-| `triage_specifier`, `curator` | `qwen/qwen3-coder` | Kanban triage, skill curation |
-| `vision`, `tts_audio_tags` | `auto` (main model) | Leave on main unless vision needs a dedicated model |
-
-Configured under `~/.hermes/config.yaml` → `auxiliary.*`.
-
-## Fallback when Codex is unavailable
-
-Order (per turn; primary restored on the next user message):
-
-1. `openrouter` / `openai/gpt-5.5`
-2. `openrouter` / `qwen/qwen3-coder`
-3. `openrouter` / `openai/gpt-4.1-mini`
-
-**Config:** `~/.hermes/config.yaml` → `fallback_providers`
-
-Requires `OPENROUTER_API_KEY` in `~/.hermes/.env`.
+Primary should restore on the next normal turn when available.
 
 ## Verification
 
@@ -129,23 +193,19 @@ hermes doctor
 Live OpenRouter / Qwen smoke test:
 
 ```bash
-hermes -z "Reply with exactly: qwen-ok" --provider openrouter -m qwen/qwen3-coder
+hermes chat -q "Reply with exactly: qwen-ok" --provider openrouter -m qwen/qwen3-coder
 ```
 
-Delegation smoke test (CLI or Telegram):
+Delegation smoke test:
 
-> Use delegate_task to run `echo delegation-test` and report the output.
+> Use `delegate_task` to run `echo delegation-test` and report the output.
 
-Then confirm `provider=openrouter` and `model=qwen/qwen3-coder` in `~/.hermes/logs/agent.log`.
+Then confirm the delegated worker used `provider=openrouter` and `model=qwen/qwen3-coder` in Hermes logs if needed.
 
 After changing `config.yaml`, restart the gateway so new Telegram sessions pick up routing:
 
 ```bash
-sudo hermes gateway restart
+hermes gateway restart
 ```
 
-Existing topic sessions may need `/new` or idle reset.
-
-## Human-readable map
-
-See `~/.hermes/model_routing.yml` for the same mapping in YAML (documentation only).
+Existing sessions may need `/new`, `/reset`, or a fresh `hermes` invocation.

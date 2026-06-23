@@ -3,103 +3,119 @@
 #
 # Canonical agent playbook (load via scraplands-hermes):
 #   ~/.hermes/skills/roblox-development/scraplands-hermes/references/model_routing.md
-#
-# Skills index:
-#   ~/.hermes/skills/roblox-development/README.md
 
 canonical_doc: skills/roblox-development/scraplands-hermes/references/model_routing.md
 enforcement: config.yaml
+policy_type: role_based_orchestrator
+fallback_semantics: provider_failures_only
 
-premium_orchestrator:
+primary_orchestrator:
   provider: openai-codex
   model: gpt-5.5
   config_keys:
     - model.provider
     - model.default
-  skills:
-    - scraplands-hermes
-    - solo-dev-advisor
+  role: project_lead_reasoning_engine_final_reviewer
   responsibilities:
-    - product_design
-    - roblox_architecture
-    - feature_design
+    - product_decisions
+    - game_design
+    - economy_balancing
+    - monetization_decisions
+    - ux_ui_decisions
+    - architecture
+    - planning
+    - feature_specifications
+    - bug_triage_synthesis
+    - changelog_generation
+    - documentation_direction
+    - localization_review
+    - project_management
+    - final_recommendations
 
-subagent_openrouter:
+coding_worker:
   provider: openrouter
   model: qwen/qwen3-coder
   config_keys:
     - delegation.provider
     - delegation.model
+  mechanism: delegate_task
+  role: primary_software_engineer
   responsibilities:
-    - feedback_triage
-    - git_workflow
-    - cursor_handoffs
+    - roblox_luau_implementation
+    - refactors
+    - multi_file_code_changes
+    - performance_optimization
+    - static_analysis
+    - code_review
+    - root_cause_analysis
+    - test_generation
+    - github_issue_implementation
+    - large_codebase_navigation
+    - roblox_luau_code_generation
 
-auxiliary_openrouter:
-  provider: openrouter
-  models:
-    gpt-4.1-mini:
-      - compression
-      - title_generation
-      - web_extract
-      - approval
-      - monitor
-      - skills_hub
-      - mcp
-      - kanban_decomposer
-      - profile_describer
-    qwen3-coder:
-      - triage_specifier
-      - curator
+lightweight_worker:
+  provider: openai-api
+  model: gpt-4.1-mini
   config_keys:
     - auxiliary.*
+  role: low_cost_utility_worker
   responsibilities:
-    - telegram_summaries
-    - admin_pm
+    - summaries
+    - formatting
+    - data_transformation
+    - small_helper_tasks
+    - log_cleanup
+    - simple_documentation_generation
+
+auto_delegate_to_qwen_when:
+  - more_than_one_file_involved
+  - estimated_change_exceeds_200_lines
+  - implementation_requested
+  - refactor_requested
+  - code_review_requested
+  - performance_optimization_requested
+  - bug_investigation_requested
+  - architecture_validation_with_codebase_inspection_requested
+  - github_issue_implementation_requested
+  - roblox_luau_code_generation_requested
+  - static_analysis_across_multiple_files_needed
+  - root_cause_analysis_in_code_needed
+  - test_generation_needed
+
+keep_on_gpt55_when:
+  - product_design_discussion
+  - game_economy_balancing
+  - monetization_decisions
+  - ux_ui_decisions
+  - roadmapping
+  - feature_prioritization
+  - changelog_writing
+  - copywriting
+  - localization_review
+  - strategic_decisions
+  - final_review_and_synthesis
+
+coding_workflow:
+  - gpt55_analyzes_request
+  - gpt55_creates_plan_and_acceptance_criteria
+  - delegate_implementation_to_qwen3_coder
+  - qwen_returns_files_commands_tests_risks
+  - gpt55_reviews_correctness_and_alignment
+  - gpt55_presents_final_recommendation
+
+large_coding_workflow:
+  - break_into_smaller_subtasks
+  - delegate_independent_subtasks_to_qwen3_coder
+  - avoid_parallel_workers_touching_same_files
+  - aggregate_results
+  - verify
+  - gpt55_final_review
 
 fallback_chain:
   config_key: fallback_providers
+  purpose: provider_failure_recovery_only
   entries:
     - openrouter/openai/gpt-5.5
     - openrouter/qwen/qwen3-coder
+    - openai-api/gpt-4.1-mini
     - openrouter/openai/gpt-4.1-mini
-
-delegation_policy:
-  core_rule: "Hermes is an orchestrator. Delegate repetitive analysis work. Use GPT-5.5 as manager, not worker."
-  auto_delegate_model: qwen/qwen3-coder
-  auto_delegate_tasks:
-    - player_feedback_triage
-    - feedback_categorization
-    - duplicate_detection
-    - sentiment_analysis
-    - translation
-    - spreadsheet_review
-    - airtable_review
-    - google_sheets_processing
-    - bug_classification
-    - feature_request_classification
-    - bulk_text_analysis
-    - large_scale_summarization
-    - backlog_grooming
-    - task_extraction
-    - analytics_review
-    - monitoring_report_analysis
-  thresholds:
-    feedback_items_gt: 10
-    bug_reports_gt: 10
-    feature_requests_gt: 10
-    spreadsheet_pages_gt: 1
-    airtable_views_gt: 1
-    records_requiring_review_gt: 20
-  keep_on_gpt55:
-    - product_strategy
-    - roadmap_planning
-    - roblox_architecture
-    - economy_balancing
-    - technical_design
-    - system_design
-    - prioritization_decisions
-    - tradeoff_analysis
-    - final_recommendations
-    - user_facing_communication
-    - review_delegated_results
