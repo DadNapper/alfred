@@ -79,6 +79,8 @@ Before any task:
 - Read active project state
 - Review relevant decisions and workflows
 
+When Oz asks to update stale Scraplands docs after a feature change, understand the implementing commit first, then update the canonical Readmes plus AI routing docs and stale script copy. Load `references/documentation-sync-workflow.md` for the full docs-sync pattern and Gold Rush-specific precedent.
+
 ## Read Order
 
 1. AGENTS.md
@@ -210,6 +212,18 @@ Default output style for Scraplands monitor reports:
 
 When Oz asks Hermes to read, automate, or summarize Scraplands Roblox Creator Hub analytics, use `references/roblox-creator-analytics-access.md`. Prefer dead-simple read-only access paths and scannable bullet/table output; pair Creator Analytics with the public metrics monitor when useful.
 
+## Automation / Delivery Bot Regression Audits
+
+When Oz asks whether recent changes could regress delivery bots/bots not being enabled:
+
+1. Inspect recent git history and working diff for `DeliveryBotController`, `LevelGenerator*`, `DeviceUpgrade`, `PurchaseDeviceHandler`, `PlayerConfigHandler`, `PlayerConfigServer`, and v2 flat mappings for `flags.deliveryBots` / `deliveryBots`.
+2. Prioritize refactor/split commits that move silo or level-generation logic; delivery bots activate through `DeliveryBotController.onSiloUpdated`, so extracted modules must still receive and call the controller dependency.
+3. Check both silo-created and existing-silo paths. Bots can fail to resume if only new silo creation notifies the controller, or if an extracted helper silently loses the dependency.
+4. Run targeted `selene` on the touched bot/silo/level files and treat undefined globals in extracted modules as high-signal even if warnings are pre-existing.
+5. Report the likely culprit with commit/file/line evidence plus a Cursor-ready fix prompt; do not patch production code unless Oz explicitly asks Hermes/Alfred to implement.
+
+Known pitfall: after splitting `LevelGenerator` helpers, `LevelGeneratorPlacementFeatures.luau` may reference locals from the parent script (for example `DeliveryBotController`) that are no longer in scope. The safe pattern is to add the dependency to the module's deps type, bind `local DeliveryBotController = deps.DeliveryBotController`, and pass it from `LevelGenerator.legacy.luau`.
+
 ## Persistence / DataStore Pressure Triage
 
 When Oz reports `StandardWriteGameServerThrottled`, `DataStore request was added to queue`, `PlayerData_v2`, or leave-time save failures, treat it as a player-data safety incident and load `references/datastore-throttling-triage.md`.
@@ -255,7 +269,10 @@ Guidelines:
 - Keep Google Sheets for raw player feedback, CSV triage, metrics, and sortable external reports; link the canonical GitHub issue in sheet notes after triage.
 - Do not create local `ai/tasks/` files; the `ai/tasks/` tracker is retired.
 - For Cursor work, Oz should copy the GitHub issue URL/body into Cursor. If Hermes needs more implementation detail, add it as a GitHub issue comment so the handoff stays attached to the canonical issue.
+- When asked to explain or recover context for a migrated GitHub issue, first use GitHub if available. If the issue body is inaccessible (private/404/auth unavailable), recover the retired local task body from git history instead of stopping: search `ai/triage/github_migration_2026_06_17.*` for the issue number, then use `git log --all --name-status -- ai/tasks` and `git show <commit>:ai/tasks/...` to read the pre-migration task file.
 - See repo `ai/workflows/github_task_tracking.md` and helper script `ai/tools/github_issues.py`.
+- When GitHub web/`gh` access is unavailable or unauthenticated, prefer the repo helper before giving up: `python3 - <<'PY'` with `sys.path.insert(0, 'ai/tools'); import github_issues as gh; gh.request(...)`. The helper reads `GITHUB_TOKEN` / `GH_TOKEN` or `~/.hermes/.env`, which may be configured even when `gh` is missing.
+- When Oz asks to confirm and close a GitHub issue, first fetch the actual issue by number and verify its title/body because the linked issue may not match the prior conversation topic. Add a concise evidence comment, replace `status:*` with `status:done`, close the issue, and report the verified URL/state.
 - See repo `ai/workflows/github_task_tracking.md`, helper script `ai/tools/github_issues.py`, and `references/github-task-tracking-transition-2026-06-17.md`.
 
 ## Task Lifecycle

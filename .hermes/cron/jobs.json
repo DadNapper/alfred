@@ -20,17 +20,17 @@
       "schedule_display": "0 5 * * *",
       "repeat": {
         "times": null,
-        "completed": 14
+        "completed": 17
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-06T16:59:53.150715+00:00",
-      "next_run_at": "2026-06-21T05:00:00+00:00",
-      "last_run_at": "2026-06-20T05:00:28.207526+00:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-06-24T05:00:00+00:00",
+      "last_run_at": "2026-06-23T05:02:56.175953+00:00",
+      "last_status": "error",
+      "last_error": "Script timed out after 120s: /home/alfred/.hermes/scripts/daily_hermes_update.sh",
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": null,
@@ -38,7 +38,8 @@
         "terminal"
       ],
       "workdir": null,
-      "profile": null
+      "profile": null,
+      "fire_claim": null
     },
     {
       "id": "d635bf399be9",
@@ -60,15 +61,15 @@
       "schedule_display": "every 720m",
       "repeat": {
         "times": null,
-        "completed": 36
+        "completed": 42
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-09T07:08:57.000215+00:00",
-      "next_run_at": "2026-06-20T11:00:24.288810+00:00",
-      "last_run_at": "2026-06-19T23:00:24.288810+00:00",
+      "next_run_at": "2026-06-23T11:04:48.834961+00:00",
+      "last_run_at": "2026-06-22T23:04:48.834961+00:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -83,8 +84,108 @@
         "terminal"
       ],
       "workdir": null,
-      "profile": null
+      "profile": null,
+      "fire_claim": null
+    },
+    {
+      "id": "0077607601e4",
+      "name": "Scraplands daily feedback triage + GitHub sync",
+      "prompt": "Daily automated Scraplands feedback triage and GitHub Issues/Project sync.\n\nContext:\n- Repo: /home/alfred/projects/scraplands\n- Google Sheets integration: /home/alfred/.hermes/integrations/google_sheets.py\n- GitHub helper: ai/tools/github_issues.py\n- GitHub owner/repo: DadNapper/scraplands\n- GitHub Project: Scraplands, user project #2 (`SCRAPLANDS_PROJECT_NUMBER=2`)\n- Project statuses currently available: `Todo`, `In Progress`, `Done`\n- Canonical task source: GitHub Issues + GitHub Project; do not create local ai/tasks files.\n- User Oz wants concise output with model used and answer; avoid progress narration.\n\nGoal each run:\n1. Inspect Google Sheets for all `status = new` rows across Bug/Feedback/Idea.\n2. If no new rows: do not edit files, do not commit, do not push. Final response: concise `No new feedback to triage` plus status counts.\n3. If new rows exist:\n   - Snapshot/read rows before mutating.\n   - Search GitHub for duplicates using root-cause/system terms.\n   - For actionable root-cause classes, create or update GitHub issues. Include row/version/platform/player evidence, likely scripts/docs, investigation plan, acceptance checks, priority rationale, labels, and body section `## Model\\nModel: auto|medium|premium`.\n   - Apply labels including priority:*, type:*, area:*, source:player-feedback, status:ready or status:backlog, and model:*.\n   - Add/move each actionable issue in GitHub Project #2 using this mapping:\n     * `status:ready`, `status:backlog`, new triaged issue, or reopened regression -> Project status `Todo`\n     * issue actively being worked -> Project status `In Progress`\n     * fixed/released/closed issue -> Project status `Done`\n     Use `python3 ai/tools/github_issues.py set-status <issue_number> <Todo|In Progress|Done> --project-number \"$SCRAPLANDS_PROJECT_NUMBER\"` after sourcing `/home/alfred/.hermes/.env`.\n   - If Project movement fails, do not block issue creation/sheet updates; apply fallback `status:*` labels and clearly report the Project movement blocker.\n   - Update the Sheet status/notes with GitHub issue URLs or non-actionable/duplicate rationale. Preserve original feedback text. Translate non-English reports in notes using `\ud83c\udf10 Translation:`.\n   - Re-read and verify new count, status counts, and updated row notes.\n   - Write a concise markdown summary file under `ai/triage/feedback_triage_<YYYY-MM-DD>_auto.md` (append/update for same day if needed) listing rows, issues, priorities, Project statuses, Sheet statuses, and verification counts.\n4. Git/ship behavior:\n   - Before committing, inspect `git status --short`, `git diff --stat`, and `git diff --name-only`.\n   - Remove generated artifacts such as `__pycache__/` and `*.pyc`.\n   - Only commit/push the intended triage summary file(s). If unrelated dirty files exist, do NOT commit or push; final response must report the blocker and the triage actions already performed.\n   - If the tree is clean except intended triage summary files, use the Scraplands ship workflow/shell scripts to commit and push to main with message like `[Alfred] Add automated feedback triage summary`.\n   - Verify remote main after push with git output before claiming it shipped.\n5. Final response: concise summary with model, new row count processed, GitHub issues created/updated, Project move status, Sheet verification counts, commit SHA/push status if shipped, and any blockers.\n\nSafety:\n- Do not modify gameplay code.\n- Do not force-push, reset --hard, rebase, merge, or delete branches.\n- Do not make DataStore-sensitive implementation claims beyond issue triage context.\n- If credentials/API access fail, do not fabricate results; report the blocker.\n- Do not recursively schedule cron jobs.",
+      "skills": [
+        "scraplands-feedback-triage",
+        "github-operations",
+        "scraplands-git-workflow",
+        "scraplands-telegram-topics"
+      ],
+      "skill": "scraplands-feedback-triage",
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 15 * * *",
+        "display": "0 15 * * *"
+      },
+      "schedule_display": "0 15 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-06-23T01:44:04.241245+00:00",
+      "next_run_at": "2026-06-23T15:00:00+00:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "origin",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "-1003907842203",
+        "chat_name": "Scraplands",
+        "thread_id": "606"
+      },
+      "enabled_toolsets": [
+        "terminal",
+        "file",
+        "web"
+      ],
+      "workdir": "/home/alfred/projects/scraplands"
+    },
+    {
+      "id": "cdd9a7b42930",
+      "name": "Scraplands weekly repo cleanup",
+      "prompt": "Weekly Scraplands repository cleanup.\n\nContext:\n- Repo: /home/alfred/projects/scraplands\n- This job is allowed by Oz to delete local and remote branches that are already fully merged into main.\n\nGoal each run:\n1. Work in /home/alfred/projects/scraplands.\n2. Inspect git state: current branch, `git status --short`, remotes, and default branch.\n3. If the working tree has uncommitted changes, do NOT switch/delete branches. Report the dirty files and stop.\n4. Fetch and prune remotes: `git fetch --prune origin`.\n5. Ensure local `main` is current with `origin/main` without using force/reset. If behind/dirty/conflicted, report blocker and stop.\n6. Delete only safely merged branches:\n   - Local: branches listed by `git branch --merged origin/main`, excluding `main`, `master`, `develop`, current branch, and any protected/release-looking names (`release/*`, `hotfix/*`, `prod*`, `production*`, `staging*`). Use `git branch -d`, not `-D`.\n   - Remote: branches listed by `git branch -r --merged origin/main`, excluding `origin/main`, `origin/HEAD`, `origin/master`, `origin/develop`, and protected/release-looking names (`release/*`, `hotfix/*`, `prod*`, `production*`, `staging*`). Delete with `git push origin --delete <branch>` only after verifying each branch is an ancestor of `origin/main` via `git merge-base --is-ancestor origin/<branch> origin/main`.\n7. Never force-delete, force-push, reset --hard, rebase, merge, or delete protected branches.\n8. Also remove generated local artifacts if present (`__pycache__/`, `*.pyc`) but do not commit anything.\n9. Final response: concise summary of branches deleted locally/remotely, skipped protected branches, and any blockers. Include exact command evidence/status.\n\nSafety:\n- If unsure whether a branch is merged/protected, skip it and report it.\n- Do not modify gameplay files.\n- Do not create commits.\n- Do not recursively schedule cron jobs.",
+      "skills": [
+        "scraplands-git-workflow",
+        "github-operations"
+      ],
+      "skill": "scraplands-git-workflow",
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 16 * * 1",
+        "display": "0 16 * * 1"
+      },
+      "schedule_display": "0 16 * * 1",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-06-23T01:46:56.071725+00:00",
+      "next_run_at": "2026-06-29T16:00:00+00:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "origin",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "-1003907842203",
+        "chat_name": "Scraplands",
+        "thread_id": "606"
+      },
+      "enabled_toolsets": [
+        "terminal",
+        "file"
+      ],
+      "workdir": "/home/alfred/projects/scraplands"
     }
   ],
-  "updated_at": "2026-06-20T06:11:05.554694+00:00"
+  "updated_at": "2026-06-23T05:02:56.179329+00:00"
 }

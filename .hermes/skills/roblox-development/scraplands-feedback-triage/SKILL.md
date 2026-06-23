@@ -551,6 +551,25 @@ Use this when Oz asks whether new Google Sheet rows can be combined with existin
 
 See `references/feedback-to-github-issues-2026-06-17.md` for a compact example of turning a small post-publish feedback batch into GitHub issues.
 
+See `references/latest-feedback-to-github-issue-2026-06-21.md` for a small two-row pass: snapshot, duplicate search, one new GitHub issue, one non-actionable `wont_fix`, sheet verification, and fallback `status:*` labels when Projects v2 movement is unavailable.
+
+See `references/latest-feedback-github-sync-2026-06-22.md` for the follow-up pattern when Oz says “update GitHub issues and push”: use the repo GitHub helper even if `gh` is unauthenticated, reopen closed issues for fresh post-fix regression evidence, create one issue per root-cause class, update Sheet notes with canonical GitHub URLs, write `ai/triage/feedback_triage_<date>.md`, then ship/push the summary with verified remote state.
+
+See `references/automated-feedback-triage-cron.md` for the daily cron pattern: run an LLM-driven job each morning, no-op cleanly when there are no new rows, create/update GitHub issues when rows exist, write an `ai/triage/*_auto.md` summary, and only commit/push intended triage summary files when the working tree has no unrelated changes.
+
+### Small latest-feedback batch checklist
+
+When only a few `status = new` rows exist, do not skip the workflow just because the batch is small:
+
+1. Snapshot the sheet before mutating it.
+2. Search GitHub for duplicates using root-cause/system terms, not only the exact feedback wording.
+3. Create or update one issue per actionable root-cause class; mark noise/non-actionable rows `wont_fix` with a note.
+4. Include row/version/platform evidence, likely scripts/docs, acceptance checks, constraints, labels, and `## Model` in any new GitHub issue.
+5. Update sheet status/notes with the GitHub issue URL or non-actionable rationale.
+6. Re-read and verify `new` count, status counts, and row notes after writes.
+7. If Projects v2 status movement is unavailable, apply fallback `status:*` labels and say that Project status was not moved; do not block issue creation on Project API/config.
+8. Write a concise `ai/triage/feedback_triage_<date>.md` summary when GitHub issues or meaningful sheet statuses changed.
+
 ## Large First-Pass Bug Triage Workflow
 
 Use this when the sheet has many old `new` bugs and Oz wants status/notes backfilled from git history.

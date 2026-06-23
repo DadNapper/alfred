@@ -24,6 +24,7 @@ agent:
   service_tier: ''
   tool_use_enforcement: auto
   task_completion_guidance: true
+  parallel_tool_call_guidance: true
   environment_probe: true
   environment_hint: ''
   coding_context: auto
@@ -80,6 +81,7 @@ terminal:
   modal_mode: auto
   cwd: .
   timeout: 180
+  daemon_term_grace_seconds: 2.0
   env_passthrough: []
   home_mode: auto
   shell_init_files: []
@@ -133,6 +135,7 @@ checkpoints:
   min_interval_hours: 24
 context_file_max_chars: 20000
 file_read_max_chars: 100000
+mcp_discovery_timeout: 1.5
 tool_output:
   max_bytes: 50000
   max_lines: 2000
@@ -156,7 +159,20 @@ compression:
   hygiene_hard_message_limit: 400
   protect_first_n: 3
   abort_on_summary_failure: false
-  codex_gpt55_autoraise: true
+  codex_gpt55_autoraise: false
+  in_place: false
+kanban:
+  dispatch_in_gateway: true
+  dispatch_interval_seconds: 60
+  failure_limit: 2
+  worker_log_rotate_bytes: 2097152
+  worker_log_backup_count: 1
+  orchestrator_profile: ''
+  default_assignee: ''
+  max_in_progress_per_profile: null
+  auto_decompose: true
+  auto_decompose_per_tick: 3
+  dispatch_stale_timeout_seconds: 14400
 prompt_caching:
   cache_ttl: 5m
 openrouter:
@@ -225,6 +241,7 @@ auxiliary:
     api_key: ''
     timeout: 30
     extra_body: {}
+    language: ''
   tts_audio_tags:
     provider: openai-api
     model: ''
@@ -282,6 +299,7 @@ display:
   tui_agents_nudge: true
   bell_on_complete: false
   show_reasoning: false
+  reasoning_full: false
   memory_notifications: 'on'
   streaming: true
   timestamps: false
@@ -297,6 +315,7 @@ display:
   skin: default
   language: en
   tui_status_indicator: kaomoji
+  cli_refresh_interval: 1.0
   user_message_preview:
     first_lines: 2
     last_lines: 2
@@ -324,6 +343,7 @@ display:
   tool_progress: false
   cleanup_progress: false
   background_process_notifications: all
+  show_codex_gpt55_autoraise_notice: false
 dashboard:
   theme: default
   show_token_analytics: false
@@ -501,10 +521,13 @@ approvals:
   mcp_reload_confirm: true
   destructive_slash_confirm: true
 command_allowlist:
-- stop/restart hermes gateway (kills running agents)
+- script execution via -e/-c flag
 - recursive delete
+- shell command via -c/-lc flag
 - execute_code
+- stop/restart hermes gateway (kills running agents)
 quick_commands: {}
+platform_hints: {}
 hooks: {}
 hooks_auto_accept: false
 personalities: {}
@@ -522,20 +545,14 @@ security:
   acked_advisories: []
   allow_lazy_installs: true
 cron:
+  provider: ''
+  chronos:
+    portal_url: https://portal.nousresearch.com
+    callback_url: ''
+    expected_audience: ''
+    nas_jwks_url: ''
   wrap_response: true
   max_parallel_jobs: null
-kanban:
-  dispatch_in_gateway: true
-  dispatch_interval_seconds: 60
-  failure_limit: 2
-  worker_log_rotate_bytes: 2097152
-  worker_log_backup_count: 1
-  orchestrator_profile: ''
-  default_assignee: ''
-  max_in_progress_per_profile: null
-  auto_decompose: true
-  auto_decompose_per_tick: 3
-  dispatch_stale_timeout_seconds: 14400
 code_execution:
   mode: project
   timeout: 300
@@ -563,10 +580,13 @@ network:
 gateway:
   message_timestamps:
     enabled: false
+  max_inbound_media_bytes: 134217728
   strict: false
   media_delivery_allow_dirs: []
   trust_recent_files: true
   trust_recent_files_seconds: 600
+  api_server:
+    max_concurrent_runs: 10
 streaming:
   enabled: false
   transport: auto

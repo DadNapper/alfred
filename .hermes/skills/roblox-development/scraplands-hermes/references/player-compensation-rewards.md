@@ -20,7 +20,18 @@ Usually exclude:
 - suggestions/ideas/general balance complaints
 - exploit reports that did not harm the reporter
 - tutorial/text/layout issues
+- display-only duplicates (e.g. duplicate labels/icons) when no currency/resource/progression loss is likely
 - spam/test/non-actionable rows
+
+## Triage-to-compensation pass
+
+When compensation is based on a recently triaged PlayerFeedback batch:
+
+1. Start from the canonical sheet/triage output, not memory of the reports.
+2. Include players tied to likely loss/progression-impact clusters (save/travel rollback, Safe Sell selling too much, mining resources not entering backpack, bot/drone invisibility that prevented usable automation, Robux/no-fulfillment).
+3. Skip users already present in the existing apology list; record them as deduped rather than adding a second entry.
+4. Skip UI-only/mobile/display-only reports unless the row clearly says the player lost resources, purchases, or progression.
+5. Add a dated comment block in `FEEDBACK_BUG_APOLOGY_USER_IDS` describing the source batch and why the new players qualify.
 
 ## Implementation guardrail
 
