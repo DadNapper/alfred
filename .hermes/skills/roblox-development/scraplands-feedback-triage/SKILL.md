@@ -567,8 +567,9 @@ When only a few `status = new` rows exist, do not skip the workflow just because
 4. Include row/version/platform evidence, likely scripts/docs, acceptance checks, constraints, labels, and `## Model` in any new GitHub issue.
 5. Update sheet status/notes with the GitHub issue URL or non-actionable rationale.
 6. Re-read and verify `new` count, status counts, and row notes after writes.
-7. If Projects v2 status movement is unavailable, apply fallback `status:*` labels and say that Project status was not moved; do not block issue creation on Project API/config.
-8. Write a concise `ai/triage/feedback_triage_<date>.md` summary when GitHub issues or meaningful sheet statuses changed.
+7. If a repo triage summary file is written or changed, run a focused **ad-hoc verification** script from `/tmp` using an OS-safe `tempfile` path with a `hermes-verify-` filename prefix. Validate the summary references the expected issue URLs/row range and that the live sheet has the expected remaining `new` count; clean up the temp script when done. Report this as ad-hoc verification, not full test/lint suite green.
+8. If Projects v2 status movement is unavailable, apply fallback `status:*` labels and say that Project status was not moved; do not block issue creation on Project API/config.
+9. Write a concise `ai/triage/feedback_triage_<date>.md` summary when GitHub issues or meaningful sheet statuses changed.
 
 ## Large First-Pass Bug Triage Workflow
 
