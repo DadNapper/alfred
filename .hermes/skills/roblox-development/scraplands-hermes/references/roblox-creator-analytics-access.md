@@ -108,6 +108,34 @@ For Oz, keep monitor output readable and skimmable:
 - compare Creator Analytics metrics to a recent baseline
 - call out current public CCU/server health separately from latest complete-day analytics
 
+## Funnel / retention analysis workflow
+
+When Oz asks to analyze funnel events or retention:
+
+1. Run `~/.hermes/scripts/scraplands_analytics_monitor.py` first to ground the answer in latest DAU, visits, session length, retention, revenue, and live public health.
+2. Cross-check current Scraplands funnel instrumentation in repo docs/code before recommending changes:
+   - `Readmes/datastore/roblox_analytics_tracking_plan.md`
+   - `ServerScriptService/Scripts/RobloxAnalyticsConfig.luau`
+   - `ServerScriptService/Scripts/AnalyticsBridge.luau`
+3. Treat the core onboarding funnel as the product diagnosis spine unless Oz provides dashboard screenshots/exported step data:
+   - First Join
+   - First Ore Collected
+   - First Sale
+   - First Miner Purchased
+   - First Miner Placed
+   - First Pickaxe Upgrade
+   - Level 2 Unlocked
+4. Pair funnel interpretation with game-design context from `ai/memory/game_overview.md`, `ai/memory/game_balancing.md`, and `ai/identity/ux_principles.md`.
+5. For retention recommendations, prioritize first-session comprehension and time-to-automation before midgame tuning: mine → sell → buy miner → place miner → see miner work → unlock Level 2.
+6. If actual Creator Hub funnel step counts are not accessible through the verified analytics API, say so briefly and provide a manual dashboard read checklist rather than inventing step conversion numbers.
+
+Useful interpretation defaults:
+- High DAU/visits with low session length and low D1 means acquisition is working but first-session quality/comprehension is weak.
+- A drop after first sale points to store/miner purchase clarity.
+- A drop after miner purchase points to placement UX.
+- A drop after miner placement points to early pacing/Level 2 gate/reward visibility.
+- A drop before first ore collection points to spawn/tutorial/readability.
+
 ## Pitfalls
 
 - Creator Analytics is lagged / daily; prefer latest complete day and avoid overreacting to same-day partials.
