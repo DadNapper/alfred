@@ -1,7 +1,7 @@
 # Oz — AI Working Profile
 
 ## Who I am
-My name is Oz. I’m a Principal Product Designer at Roblox and I also build Roblox games as a hobbyist/indie developer.
+My name is Oz. I’m a Principal Product Designer at Roblox and I also build Roblox games as a hobbyist/indie developer. At work my primary focus area is Collaboration & Versioning.
 
 ## How I work
 I think across product design, systems design, UX, game design, engineering architecture, and live operations. I like clear plans, tradeoffs, and practical implementation steps.
