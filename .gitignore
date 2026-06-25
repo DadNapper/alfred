@@ -178,3 +178,6 @@ maintenance/logs/
 
 .zcompdump*
 .sudo_as_admin_successful
+
+.hermes/cron/ticker_heartbeat
+.hermes/cron/ticker_last_success
