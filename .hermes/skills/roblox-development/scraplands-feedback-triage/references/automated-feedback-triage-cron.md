@@ -55,8 +55,9 @@ Recommended workdir:
    - Update Sheet status/notes with canonical GitHub URLs or non-actionable/duplicate rationale.
    - Re-read and verify new count, status counts, and updated row notes.
    - Write/update `ai/triage/feedback_triage_<YYYY-MM-DD>_auto.md`.
-4. Commit/push only if the working tree is clean except intended triage summary files.
-5. If unrelated dirty files exist, do not commit/push; report the blocker and leave triage side effects visible in Sheets/GitHub.
+4. Commit and push intended triage summary files to `main` as part of the same triage task; do not leave completed triage summaries sitting uncommitted for Oz to discover later.
+5. Commit/push only if the working tree is clean except intended triage summary files.
+6. If unrelated dirty files exist, do not commit/push; report the blocker and leave triage side effects visible in Sheets/GitHub.
 
 ## Git safety
 
